@@ -8,16 +8,20 @@
 
 ## I. Technical Contribution (15 Points)
 
+Đã viết hướng dẫn chạy project trong `README.md`, bao gồm các bước tạo `.env`, cài dependencies, cấu hình provider (`google`, `openai`, `local`) và chạy bằng `python app.py` hoặc `python main.py`.
+
 Phần đóng góp chính của em tập trung vào **chuẩn hóa luồng chạy project với Gemini API** (Google AI Studio) thay cho mô hình GGUF chạy local, để team có thể demo và làm lab ổn định trên máy cá nhân mà không phụ thuộc tải file ~2GB hay GPU.
 
 ### Modules đã chỉnh sửa / bổ sung
 
-| File | Nội dung |
-|------|----------|
-| `app.py` | Cấu hình `get_llm()` cho `DEFAULT_PROVIDER=google`; kiểm tra định dạng key `AIza...`; tương thích Gradio 6; `demo.queue(default_concurrency_limit=1)` |
-| `main.py` | Đồng bộ logic provider Gemini + validation key |
-| `.env` / `.env.example` | Hướng dẫn chuyển `google` / `local` / `openai` |
-| `src/core/local_provider.py` | (Phụ) Tối ưu khi fallback local: lock inference, giảm `max_tokens`, xử lý `CUDA_PATH` trên Windows |
+
+| File                         | Nội dung                                                                                                                                              |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app.py`                     | Cấu hình `get_llm()` cho `DEFAULT_PROVIDER=google`; kiểm tra định dạng key `AIza...`; tương thích Gradio 6; `demo.queue(default_concurrency_limit=1)` |
+| `main.py`                    | Đồng bộ logic provider Gemini + validation key                                                                                                        |
+| `.env` / `.env.example`      | Hướng dẫn chuyển `google` / `local` / `openai`                                                                                                        |
+| `src/core/local_provider.py` | (Phụ) Tối ưu khi fallback local: lock inference, giảm `max_tokens`, xử lý `CUDA_PATH` trên Windows                                                    |
+
 
 ### Code highlights
 
@@ -36,10 +40,12 @@ return GeminiProvider(model_name=model, api_key=api_key)
 
 **3. Đo lường hiệu năng (ước lượng thực nghiệm trên cùng câu hỏi Agent)**
 
-| Provider | Thời gian phản hồi (1 câu, tab Agent) |
-|----------|--------------------------------------|
-| Local `qwen2.5-3b-instruct` (CPU) | ~90–120 giây |
-| Gemini `gemini-2.5-flash-lite` | ~12–18 giây |
+
+| Provider                          | Thời gian phản hồi (1 câu, tab Agent) |
+| --------------------------------- | ------------------------------------- |
+| Local `qwen2.5-3b-instruct` (CPU) | ~90–120 giây                          |
+| Gemini `gemini-2.5-flash-lite`    | ~12–18 giây                           |
+
 
 → **Nhanh hơn khoảng 6–7 lần**, đủ để demo trực tiếp trước lớp mà không bị timeout UI.
 
@@ -76,11 +82,13 @@ Khi chuyển sang Gemini, hệ thống trả về lỗi **429 Resource Exhausted
 
 ### Solution
 
-| Vấn đề | Cách xử lý |
-|--------|------------|
-| Key / quota | Dùng key từ [Google AI Studio](https://aistudio.google.com/apikey), đặt `DEFAULT_MODEL=gemini-2.5-flash-lite`, kiểm tra https://ai.dev/rate-limit |
-| Gradio | Sửa `app.py` theo API Gradio 6; `PYTHONUTF8=1` khi chạy trên PowerShell |
-| Local ổn định | `threading.Lock` trong `LocalProvider`; `demo.queue(default_concurrency_limit=1)`; bỏ `CUDA_PATH` nếu path invalid |
+
+| Vấn đề        | Cách xử lý                                                                                                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Key / quota   | Dùng key từ [Google AI Studio](https://aistudio.google.com/apikey), đặt `DEFAULT_MODEL=gemini-2.5-flash-lite`, kiểm tra [https://ai.dev/rate-limit](https://ai.dev/rate-limit) |
+| Gradio        | Sửa `app.py` theo API Gradio 6; `PYTHONUTF8=1` khi chạy trên PowerShell                                                                                                        |
+| Local ổn định | `threading.Lock` trong `LocalProvider`; `demo.queue(default_concurrency_limit=1)`; bỏ `CUDA_PATH` nếu path invalid                                                             |
+
 
 Sau khi áp dụng, Agent hoàn thành chuỗi `search_recipe → calculate_price → Final Answer` trong vài chục giây thay vì vài phút.
 

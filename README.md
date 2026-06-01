@@ -15,7 +15,54 @@ cp .env.example .env
 pip install -r requirements.txt
 ```
 
-### 3. Directory Structure
+### 3. Configure Provider
+Open `.env` and choose one provider:
+
+```env
+# Options: openai | google | local
+DEFAULT_PROVIDER=google
+DEFAULT_MODEL=gemini-2.5-flash-lite
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+For OpenAI, use:
+
+```env
+DEFAULT_PROVIDER=openai
+DEFAULT_MODEL=gpt-4o-mini
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+For local GGUF models, see the "Running with Local Models (CPU)" section below.
+
+### 4. Run the Project
+
+Run the Gradio web app:
+
+```bash
+python app.py
+```
+
+Then open the local URL printed in the terminal, usually:
+
+```text
+http://127.0.0.1:7860
+```
+
+Run the command-line demo:
+
+```bash
+python main.py
+```
+
+On Windows PowerShell, if Vietnamese text or emoji is displayed incorrectly, run:
+
+```powershell
+$env:PYTHONUTF8="1"
+python app.py
+```
+
+### 5. Directory Structure
 - `src/tools/`: Extension point for your custom tools.
 
 ## 🏠 Running with Local Models (CPU)
