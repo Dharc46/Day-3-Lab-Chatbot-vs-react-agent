@@ -18,6 +18,9 @@ def get_llm():
     provider = os.getenv("DEFAULT_PROVIDER", "local")
 
     if provider == "local":
+        cuda_path = os.environ.get("CUDA_PATH")
+        if cuda_path and not os.path.isdir(os.path.join(cuda_path, "bin")):
+            os.environ.pop("CUDA_PATH", None)
         from src.core.local_provider import LocalProvider
         model_path = os.getenv("LOCAL_MODEL_PATH", "./models/qwen2.5-3b-instruct-q4_k_m.gguf")
         print(f"🔧 Provider: local ({os.path.basename(model_path)})")
@@ -25,11 +28,14 @@ def get_llm():
 
     elif provider == "google":
         from src.core.gemini_provider import GeminiProvider
-        print("🔧 Provider: google (gemini)")
-        return GeminiProvider(
-            model_name=os.getenv("DEFAULT_MODEL", "gemini-1.5-flash"),
-            api_key=os.getenv("GEMINI_API_KEY"),
-        )
+        api_key = os.getenv("GEMINI_API_KEY", "")
+        if not api_key.startswith("AIza"):
+            raise ValueError(
+                "GEMINI_API_KEY phải bắt đầu bằng 'AIza' (tạo tại https://aistudio.google.com/apikey)."
+            )
+        model = os.getenv("DEFAULT_MODEL", "gemini-2.5-flash-lite")
+        print(f"🔧 Provider: google ({model})")
+        return GeminiProvider(model_name=model, api_key=api_key)
 
     else:
         from src.core.openai_provider import OpenAIProvider
