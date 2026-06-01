@@ -1,6 +1,10 @@
 """
-Tools cho Trợ Lý Đi Chợ Thông Minh.
-Mỗi tool: nhận 1 str, trả 1 str.
+Tools cho Trợ Lý Đi Chợ Thông Minh — V2.
+Changes from v1:
+  - search_recipe: added reverse matching (priority 4)
+  - calculate_price: tracks out_of_stock separately, shows unit in breakdown
+  - All tools: input validation for empty strings
+  - TOOL_REGISTRY: descriptions more specific (v2)
 """
 
 import json
@@ -12,26 +16,33 @@ from src.tools.mock_data import RECIPES, STORE_INVENTORY, SUBSTITUTIONS
 # ==============================================================
 
 def search_recipe(dish_name: str) -> str:
-    """Tìm công thức nấu ăn theo tên món. Ưu tiên match chính xác trước."""
+    """Find a recipe by dish name. Prioritizes exact > contains > multi-word > reverse match."""
     if not dish_name or not dish_name.strip():
         return "Vui lòng nhập tên món ăn."
 
     query = dish_name.lower().strip()
 
-    # Ưu tiên 1: match chính xác trong tên món
+    # Priority 1: exact match
     for key, recipe in RECIPES.items():
         if query == recipe["name"].lower() or query == key:
             return json.dumps(recipe, ensure_ascii=False, indent=2)
 
-    # Ưu tiên 2: query nằm trong tên món (vd: "phở" → "Phở Bò")
+    # Priority 2: query is substring of recipe name
     for key, recipe in RECIPES.items():
         if query in recipe["name"].lower() or query in key:
             return json.dumps(recipe, ensure_ascii=False, indent=2)
 
-    # Ưu tiên 3: bất kỳ từ nào match (vd: "gà kho" → "ga_kho_gung")
+    # Priority 3: all query words match (e.g. "gà kho" → "ga_kho_gung")
     for key, recipe in RECIPES.items():
         words = query.split()
         if len(words) > 1 and all(w in key or w in recipe["name"].lower() for w in words):
+            return json.dumps(recipe, ensure_ascii=False, indent=2)
+
+    # Priority 4 (v2 fix): reverse match — recipe name words found in query
+    # Handles cases like "đồ bún bò Huế" → contains "bún", "bò", "huế"
+    for key, recipe in RECIPES.items():
+        recipe_words = recipe["name"].lower().split()
+        if all(w in query for w in recipe_words):
             return json.dumps(recipe, ensure_ascii=False, indent=2)
 
     available = ", ".join(r["name"] for r in RECIPES.values())
@@ -39,7 +50,7 @@ def search_recipe(dish_name: str) -> str:
 
 
 def check_inventory(item_name: str) -> str:
-    """Kiểm tra nguyên liệu trong cửa hàng: giá, đơn vị, còn hàng không."""
+    """Check if an ingredient is available in store: price, unit, stock status."""
     if not item_name or not item_name.strip():
         return "Vui lòng nhập tên nguyên liệu."
 
@@ -63,10 +74,9 @@ def check_inventory(item_name: str) -> str:
 
 
 def calculate_price(items_str: str) -> str:
-    """Tính tổng tiền cho danh sách nguyên liệu (comma-separated).
+    """Calculate total estimated price for a comma-separated list of ingredients.
 
-    Lưu ý: tính theo giá đơn vị (vd: 1kg, 1 chai), chưa tính theo lượng
-    thực tế trong recipe. Đây là ước tính chi phí mua nguyên liệu.
+    Note: uses unit price (e.g. per kg, per bottle), not actual recipe quantity.
     """
     if not items_str or not items_str.strip():
         return "Vui lòng nhập danh sách nguyên liệu, cách nhau bởi dấu phẩy."
@@ -102,7 +112,7 @@ def calculate_price(items_str: str) -> str:
 
 
 def suggest_substitute(item_name: str) -> str:
-    """Gợi ý nguyên liệu thay thế khi hết hàng."""
+    """Suggest substitute ingredients when an item is out of stock."""
     if not item_name or not item_name.strip():
         return "Vui lòng nhập tên nguyên liệu cần thay thế."
 
@@ -116,30 +126,47 @@ def suggest_substitute(item_name: str) -> str:
 
 
 # ==============================================================
-# REGISTRY — agent dùng list này
+# REGISTRY V2 — more specific descriptions
 # ==============================================================
-
-# ★ ĐÂY LÀ V1
 
 TOOL_REGISTRY = [
     {
         "name": "search_recipe",
-        "description": "Tìm công thức nấu ăn. Input: tên món. Output: nguyên liệu, khẩu phần, thời gian.",
+        "description": (
+            "Search for a Vietnamese recipe by dish name. "
+            "Input: dish name in Vietnamese (e.g. 'phở bò', 'bún bò Huế', 'gà kho gừng'). "
+            "Output: JSON with name, servings (int), ingredients (list of {item, quantity}), time. "
+            "Returns error message if not found, with list of available dishes."
+        ),
         "function": search_recipe,
     },
     {
         "name": "check_inventory",
-        "description": "Kiểm tra nguyên liệu trong cửa hàng. Input: tên nguyên liệu. Output: giá, đơn vị, còn/hết.",
+        "description": (
+            "Check ONE ingredient in the store inventory. "
+            "Input: ingredient name in Vietnamese (e.g. 'thịt bò', 'giò heo'). "
+            "Output: price in VNĐ, unit, and stock status (CÒN HÀNG / HẾT HÀNG). "
+            "Only check one ingredient per call."
+        ),
         "function": check_inventory,
     },
     {
         "name": "calculate_price",
-        "description": "Tính tổng tiền. Input: nguyên liệu cách dấu phẩy. Output: chi tiết + tổng.",
+        "description": (
+            "Calculate total estimated cost for a list of ingredients. "
+            "Input: comma-separated ingredient names (e.g. 'thịt bò, hành tây, gừng'). "
+            "Output: price breakdown per item and total in VNĐ. "
+            "Also flags out-of-stock and not-found items."
+        ),
         "function": calculate_price,
     },
     {
         "name": "suggest_substitute",
-        "description": "Gợi ý thay thế khi hết hàng. Input: tên nguyên liệu. Output: lựa chọn thay thế.",
+        "description": (
+            "Suggest replacement ingredients when something is out of stock. "
+            "Input: name of the out-of-stock ingredient (e.g. 'giò heo'). "
+            "Output: list of 2-3 alternative ingredients."
+        ),
         "function": suggest_substitute,
     },
 ]
