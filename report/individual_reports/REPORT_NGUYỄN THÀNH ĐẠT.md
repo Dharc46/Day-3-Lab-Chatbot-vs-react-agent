@@ -272,5 +272,4 @@ Trong lab này, vai trò của tôi là **người C — Backend Logic**, phụ 
 
 ---
 
-> [!NOTE]
-> Submit this report by renaming it to `REPORT_[YOUR_NAME].md` and placing it in this folder.
+
