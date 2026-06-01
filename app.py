@@ -122,4 +122,4 @@ with gr.Blocks() as demo:
     gr.Markdown("---\n*Lab 3 — Agentic AI — VinUni*")
 
 if __name__ == "__main__":
-    demo.launch(share=False)
+    demo.queue(default_concurrency_limit=1).launch(share=False)
