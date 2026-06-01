@@ -3,6 +3,7 @@ Tools cho Trợ Lý Đi Chợ Thông Minh — V2.
 Changes from v1:
   - search_recipe: added reverse matching (priority 4)
   - calculate_price: tracks out_of_stock separately, shows unit in breakdown
+  - suggest_substitute: handles comma-separated multiple items
   - All tools: input validation for empty strings
   - TOOL_REGISTRY: descriptions more specific (v2)
 """
@@ -39,7 +40,6 @@ def search_recipe(dish_name: str) -> str:
             return json.dumps(recipe, ensure_ascii=False, indent=2)
 
     # Priority 4 (v2 fix): reverse match — recipe name words found in query
-    # Handles cases like "đồ bún bò Huế" → contains "bún", "bò", "huế"
     for key, recipe in RECIPES.items():
         recipe_words = recipe["name"].lower().split()
         if all(w in query for w in recipe_words):
@@ -54,23 +54,43 @@ def check_inventory(item_name: str) -> str:
     if not item_name or not item_name.strip():
         return "Vui lòng nhập tên nguyên liệu."
 
-    item = item_name.lower().strip()
+    # V2: handle comma-separated input
+    items = [i.strip().lower() for i in item_name.split(",") if i.strip()]
 
-    # Exact match
-    if item in STORE_INVENTORY:
-        info = STORE_INVENTORY[item]
-        status = "CÒN HÀNG ✓" if info["in_stock"] else "HẾT HÀNG ✗"
-        return f"{item}: {info['price']:,}đ/{info['unit']} — {status}"
+    if len(items) == 1:
+        item = items[0]
+        # Exact match
+        if item in STORE_INVENTORY:
+            info = STORE_INVENTORY[item]
+            status = "CÒN HÀNG ✓" if info["in_stock"] else "HẾT HÀNG ✗"
+            return f"{item}: {info['price']:,}đ/{info['unit']} — {status}"
+        # Fuzzy match
+        matches = [k for k in STORE_INVENTORY if item in k or k in item]
+        if matches:
+            return "\n".join(
+                f"{m}: {STORE_INVENTORY[m]['price']:,}đ/{STORE_INVENTORY[m]['unit']} — "
+                f"{'CÒN HÀNG ✓' if STORE_INVENTORY[m]['in_stock'] else 'HẾT HÀNG ✗'}"
+                for m in matches
+            )
+        return f"Không tìm thấy '{item_name}' trong cửa hàng."
 
-    # Fuzzy match
-    matches = [k for k in STORE_INVENTORY if item in k or k in item]
-    if matches:
-        return "\n".join(
-            f"{m}: {STORE_INVENTORY[m]['price']:,}đ/{STORE_INVENTORY[m]['unit']} — "
-            f"{'CÒN HÀNG ✓' if STORE_INVENTORY[m]['in_stock'] else 'HẾT HÀNG ✗'}"
-            for m in matches
-        )
-    return f"Không tìm thấy '{item_name}' trong cửa hàng."
+    # Multiple items
+    results = []
+    for item in items:
+        if item in STORE_INVENTORY:
+            info = STORE_INVENTORY[item]
+            status = "CÒN HÀNG ✓" if info["in_stock"] else "HẾT HÀNG ✗"
+            results.append(f"{item}: {info['price']:,}đ/{info['unit']} — {status}")
+        else:
+            matches = [k for k in STORE_INVENTORY if item in k or k in item]
+            if matches:
+                for m in matches:
+                    info = STORE_INVENTORY[m]
+                    status = "CÒN HÀNG ✓" if info["in_stock"] else "HẾT HÀNG ✗"
+                    results.append(f"{m}: {info['price']:,}đ/{info['unit']} — {status}")
+            else:
+                results.append(f"{item}: không tìm thấy")
+    return "\n".join(results)
 
 
 def calculate_price(items_str: str) -> str:
@@ -116,13 +136,24 @@ def suggest_substitute(item_name: str) -> str:
     if not item_name or not item_name.strip():
         return "Vui lòng nhập tên nguyên liệu cần thay thế."
 
-    item = item_name.lower().strip()
-    if item in SUBSTITUTIONS:
-        return f"Thay thế cho '{item}': {', '.join(SUBSTITUTIONS[item])}"
-    for key in SUBSTITUTIONS:
-        if item in key or key in item:
-            return f"Thay thế cho '{key}': {', '.join(SUBSTITUTIONS[key])}"
-    return f"Không có gợi ý thay thế cho '{item_name}'."
+    # V3 fix: handle comma-separated multiple items
+    items = [i.strip().lower() for i in item_name.split(",") if i.strip()]
+    results = []
+
+    for item in items:
+        if item in SUBSTITUTIONS:
+            results.append(f"Thay thế cho '{item}': {', '.join(SUBSTITUTIONS[item])}")
+        else:
+            found = False
+            for key in SUBSTITUTIONS:
+                if item in key or key in item:
+                    results.append(f"Thay thế cho '{key}': {', '.join(SUBSTITUTIONS[key])}")
+                    found = True
+                    break
+            if not found:
+                results.append(f"Không có gợi ý thay thế cho '{item}'.")
+
+    return "\n".join(results) if results else f"Không có gợi ý thay thế cho '{item_name}'."
 
 
 # ==============================================================
@@ -143,10 +174,10 @@ TOOL_REGISTRY = [
     {
         "name": "check_inventory",
         "description": (
-            "Check ONE ingredient in the store inventory. "
-            "Input: ingredient name in Vietnamese (e.g. 'thịt bò', 'giò heo'). "
-            "Output: price in VNĐ, unit, and stock status (CÒN HÀNG / HẾT HÀNG). "
-            "Only check one ingredient per call."
+            "Check ingredient availability in the store. "
+            "Input: ingredient name(s) in Vietnamese, comma-separated for multiple "
+            "(e.g. 'thịt bò' or 'thịt bò, giò heo'). "
+            "Output: price in VNĐ, unit, and stock status (CÒN HÀNG / HẾT HÀNG)."
         ),
         "function": check_inventory,
     },
@@ -163,9 +194,10 @@ TOOL_REGISTRY = [
     {
         "name": "suggest_substitute",
         "description": (
-            "Suggest replacement ingredients when something is out of stock. "
-            "Input: name of the out-of-stock ingredient (e.g. 'giò heo'). "
-            "Output: list of 2-3 alternative ingredients."
+            "Suggest replacement ingredients when items are out of stock. "
+            "Input: ingredient name(s), comma-separated for multiple "
+            "(e.g. 'giò heo' or 'giò heo, mắm ruốc'). "
+            "Output: list of 2-3 alternatives for each item."
         ),
         "function": suggest_substitute,
     },
