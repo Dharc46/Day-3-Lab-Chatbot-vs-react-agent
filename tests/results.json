@@ -1,0 +1,145 @@
+[
+  {
+    "id": "S1",
+    "type": "simple",
+    "provider": "local",
+    "input": "Phở bò nấu mất bao lâu?",
+    "expected": "thời gian nấu",
+    "chatbot_answer": "Phở bò truyền thống thường mất khoảng 1-2 giờ để nấu. Tuy nhiên, thời gian này có thể thay đổi tùy theo kích thước của nồi, lượng nước dùng, và cách nấu của bạn. Bạn cũng cần thêm thời gian để nấu nước dùng và làm phở.",
+    "chatbot_time_ms": 8263,
+    "agent_answer": "Phở Bò cho 4 người cần 12 nguyên liệu, tổng chi phí ước tính khoảng 458,000đ. Các nguyên liệu gồm: bánh phở (800g), thịt bò (500g), xương bò (1kg), hành tây (2 củ), gừng (1 củ), quế (1 thanh), hoa hồi (3 cái), nước mắm (3 chén), hành lá (1 bó), giá đỗ (200g), rau mùi (1 bó). Phở Bò nấu mất 3 tiếng.",
+    "agent_time_ms": 49762
+  },
+  {
+    "id": "S2",
+    "type": "simple",
+    "provider": "local",
+    "input": "Cơm tấm gồm những gì?",
+    "expected": "liệt kê nguyên liệu cơ bản",
+    "chatbot_answer": "Cơm tấm thường bao gồm các nguyên liệu chính sau:\n\n1. Cơm: Cơm trắng hoặc cơm gạo nếp.\n2. Thịt: Thường là thịt heo xé hoặc thịt gà xé.\n3. Nấm: Nấm mè hoặc nấm rơm.\n4. Ớt: Ớt chuông hoặc ớt bột.\n5. Tỏi: Tỏi băm hoặc tỏi bột.\n6. Nước mắm: Nước mắm hoặc tương ớt.\n7. Rau: Rau thơm như hành lá, ngò, hoặc",
+    "chatbot_time_ms": 13311,
+    "agent_answer": "Cơm Tấm Sườn Bì Chả cho 2 người cần 12 nguyên liệu, tổng chi phí ước tính khoảng 458,500đ. Các nguyên liệu gồm: gạo tấm (300g), sườn heo (4 miếng), bì heo (150g), trứng (2 quả), thịt heo xay (200g), nước mắm (3 muỗng canh), đường (2 muỗng canh), tỏi (5 tép), dưa leo (1 quả), cà chua (1 quả), mỡ hành",
+    "agent_time_ms": 69758
+  },
+  {
+    "id": "M1",
+    "type": "multi_step",
+    "provider": "local",
+    "input": "Tôi muốn nấu phở bò cho 4 người, kiểm tra nguyên liệu và tổng bao nhiêu tiền?",
+    "expected": "recipe → check → calculate",
+    "chatbot_answer": "Để nấu phở bò cho 4 người, bạn sẽ cần các nguyên liệu sau:\n\n- 1 kg bò (loại bò nạc băm hoặc bò nạc băm nhỏ)\n- 1 kg bánh phở\n- 1 kg rau thơm (cây thơm, ngò, ớt)\n- 1 kg hành lá\n- 1 kg hành củ\n- 1 kg tỏi\n- 1 kg rau cải (cải ngọt, cải thảo)\n- 1 kg thịt bò (nạc bò, bò bít thaw, bò bít tết)\n- 1 kg nấm mèo",
+    "chatbot_time_ms": 86249,
+    "agent_answer": "用户想要做4人份的牛肉牛腩汤（phở bò）。根据菜谱，需要的原料包括：800克 bánh phở，500克 thịt bò，1千克 xương bò，2根 hành tây，1根 gừng，1根 quế，3个 hoa hồi，35毫升 nước mắm，1把 hành lá，200克 giá đỗ，1把 rau mùi。总费用预计为573,000đ。请注意，这些原料的库存情况如下：đùi gà（75,000đ/kg），bánh phở（25,000đ/kg），thịt bò（280,000đ/kg），xương bò（80,000đ/kg），hành tây（15,000đ/kg），gừng",
+    "agent_time_ms": 82481
+  },
+  {
+    "id": "M2",
+    "type": "multi_step",
+    "provider": "local",
+    "input": "Nấu bún bò Huế cần gì? Nguyên liệu hết thì gợi ý thay thế giúp tôi.",
+    "expected": "recipe → check → substitute (giò heo, mắm ruốc)",
+    "chatbot_answer": "Để nấu bún bò Huế, bạn cần các nguyên liệu chính như sau:\n\n1. Bún: Bún bò Huế thường dùng bún mì hoặc bún gạo.\n2. Bò: Nên chọn thịt bò nạc băm hoặc bò nạc đùi băm nhỏ.\n3. Nước dùng: Nước dùng bún bò Huế thường được nấu từ xương bò, hành, tỏi, hạt nêm và các gia vị khác.\n4. Rau thơm: Rau thơm như hàn",
+    "chatbot_time_ms": 35605,
+    "agent_answer": "Món Bún Bò Huế cho 4 người cần 10 nguyên liệu, tổng chi phí ước tính khoảng 422,000đ. Các nguyên liệu gồm: bún tươi (1kg), thịt bò bắp (400g), chả cua (200g), sả (5 cây), hành tây (1 củ), rau muống (1 bó), bắp chuối (1 bắp). Tuy nhiên, giò heo và mắm ruốc đã hết hàng. Tôi sẽ tìm thay thế cho bạn: ch",
+    "agent_time_ms": 96146
+  },
+  {
+    "id": "M3",
+    "type": "multi_step",
+    "provider": "local",
+    "input": "Tôi có 200,000đ, muốn nấu cơm tấm cho 2 người. Đủ tiền không?",
+    "expected": "recipe → calculate → so sánh budget",
+    "chatbot_answer": "Dựa trên thông tin bạn cung cấp, 200,000đ (200k) là đủ để nấu cơm tấm cho 2 người. Tuy nhiên, giá trị này có thể thay đổi tùy theo địa điểm và cửa hàng thực phẩm bạn đang sử dụng. \n\nĐể nấu cơm tấm cho 2 người, bạn sẽ cần:\n- 1 gói cơm tấm (đủ cho 2 người)\n- 1 gói thịt (thịt heo, thịt bò, thịt gà đều ",
+    "chatbot_time_ms": 23760,
+    "agent_answer": "Món Cơm Tấm cho 2 người cần 12 nguyên liệu. Tổng chi phí ước tính là 458,500đ. Các nguyên liệu gồm: gạo tấm (300g), sườn heo (4 miếng), bì heo (150g), trứng (2 quả), thịt heo xay (200g), nước mắm (3 muỗng canh), đường (2 muỗng canh), tỏi (5 tép), dưa leo (1 quả), cà chua (1 quả), mỡ hành (2 hũ).",
+    "agent_time_ms": 83250
+  },
+  {
+    "id": "M4",
+    "type": "multi_step",
+    "provider": "local",
+    "input": "Nấu canh chua cá cần gì? Tính giá giúp tôi.",
+    "expected": "recipe → calculate",
+    "chatbot_answer": "Để nấu canh chua cá, bạn sẽ cần các nguyên liệu sau:\n\n1. Cá (thường là cá tra hoặc cá trích)\n2. Ớt (theo khẩu vị)\n3. Thơm hoặc hành lá\n4. Hành khô\n5. Hạt nêm\n6. Đường\n7. Dầu ăn\n8. Nước mắm\n9. Rau thơm (tắc, mùi tàu, húng quế, etc.)\n10. Cây câu (cây phèn)\n\nGiá nguyên liệu sẽ phụ thuộc vào địa điểm mu",
+    "chatbot_time_ms": 28247,
+    "agent_answer": "Để nấu Canh Chua Cá cho 4 người, bạn sẽ cần 10 nguyên liệu. Tổng chi phí ước tính khoảng 234,000đ. Nguyên liệu gồm: cá lóc (500g), cà chua (2 quả), đậu bắp (100g), giá đỗ (150g), me (50g), ớt (2 quả), nước mắm (2 muỗng canh), đường (18,000đ/kg). Rau ngổ và thơm (dứa) không có trong kho hàng, bạn có ",
+    "agent_time_ms": 79095
+  },
+  {
+    "id": "M5",
+    "type": "multi_step",
+    "provider": "local",
+    "input": "Sinh viên có 150,000đ. Gợi ý 1 món tiết kiệm nhất?",
+    "expected": "compare recipes → pick cheapest",
+    "chatbot_answer": "Để tiết kiệm chi phí, bạn có thể nấu món cơm trắng với hành tây. Đây là một món ăn đơn giản, tiết kiệm nguyên liệu và dễ nấu. Bạn chỉ cần 150,000đ để mua gạo và hành tây.",
+    "chatbot_time_ms": 5760,
+    "agent_answer": "Xin lỗi, không hoàn thành được yêu cầu trong giới hạn bước cho phép.",
+    "agent_time_ms": 61474
+  },
+  {
+    "id": "E1",
+    "type": "edge",
+    "provider": "local",
+    "input": "Nấu sushi được không?",
+    "expected": "không tìm thấy → thông báo",
+    "chatbot_answer": "Tất nhiên, bạn có thể nấu sushi! Dưới đây là một công thức cơ bản để nấu sushi:\n\nNguyên liệu:\n- 100g cá hồi (hoặc cá ngừ, cá trích, cá bạch tuộc)\n- 100g phô mai mozzarella\n- 100g phô mai mozzarella (hoặc phô mai ricotta)\n- 100g phô mai mozzarella (hoặc phô mai cheddar)\n- 100g phô mai mozzarella (hoặ",
+    "chatbot_time_ms": 91318,
+    "agent_answer": "用户想要做寿司，我找到了Phở Bò的食谱。制作这道菜需要以下食材：1kg đùi gà, 2 củ hành tây, 1 củ gừng。这些食材在商店里都有货，价格分别为：1kg đùi gà 75,000đ, 2 củ hành tây 15,000đ, 1 củ gừng 30,000đ。制作Phở Bò的总成本估计为120,000đ。如果您需要其他菜品的食谱或有其他问题，请告诉我。",
+    "agent_time_ms": 65578
+  },
+  {
+    "id": "E2",
+    "type": "edge",
+    "provider": "local",
+    "input": "Giá thịt bò bao nhiêu? Còn đùi gà?",
+    "expected": "check 2 items",
+    "chatbot_answer": "Xin lỗi, tôi không thể cung cấp thông tin về giá thực phẩm hiện tại vì tôi không có khả năng truy cập dữ liệu về giá bán tại cửa hàng thực phẩm Việt Nam. Tuy nhiên, bạn có thể kiểm tra trực tiếp tại cửa hàng hoặc trang web của họ để biết giá cả mới nhất.",
+    "chatbot_time_ms": 6827,
+    "agent_answer": "Giá thịt bò là 280,000đ/kg và đùi gà là 75,000đ/kg. Tổng chi phí cho 1 kg thịt bò và 1 kg đùi gà ước tính là 355,000đ.",
+    "agent_time_ms": 39172
+  },
+  {
+    "id": "E3",
+    "type": "edge",
+    "provider": "local",
+    "input": "Bún bò Huế cho 8 người hết bao nhiêu?",
+    "expected": "recipe 4 người → x2 → calculate",
+    "chatbot_answer": "Để tính toán chi phí cho bún bò Huế cho 8 người, tôi cần biết giá của các nguyên liệu chính. Tuy nhiên, tôi có thể đưa ra một mức giá tham khảo dựa trên một công thức tiêu chuẩn.\n\nBún bò Huế thường bao gồm:\n- Bún (tùy loại, tùy nơi)\n- Thịt bò (tùy loại, tùy nơi)\n- Nước dùng (tùy cách nấu)\n- Rau thơm",
+    "chatbot_time_ms": 26814,
+    "agent_answer": "Món Bún Bò Huế cho 8 người cần 10 nguyên liệu, tổng chi phí ước tính khoảng 422,000đ. Các nguyên liệu gồm: bún tươi (1kg), thịt bò bắp (400g), chân giò heo (2 cái), chả cua (200g), sả (5 cây), mắm ruốc (2 muỗng canh), ớt bột (1 muỗng canh), hành tây (1 củ), rau muống (1 bó), bắp chuối (1 bắp). Giò h",
+    "agent_time_ms": 97218
+  },
+  {
+    "id": "S1",
+    "type": "simple",
+    "provider": "google",
+    "input": "Phở bò nấu mất bao lâu?",
+    "expected": "thời gian nấu",
+    "chatbot_answer": "Lỗi: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "chatbot_time_ms": 419,
+    "agent_answer": "Lỗi khi gọi LLM: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "agent_time_ms": 132
+  },
+  {
+    "id": "M2",
+    "type": "multi_step",
+    "provider": "google",
+    "input": "Nấu bún bò Huế cần gì? Nguyên liệu hết thì gợi ý thay thế giúp tôi.",
+    "expected": "recipe → check → substitute (giò heo, mắm ruốc)",
+    "chatbot_answer": "Lỗi: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "chatbot_time_ms": 119,
+    "agent_answer": "Lỗi khi gọi LLM: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "agent_time_ms": 107
+  },
+  {
+    "id": "E1",
+    "type": "edge",
+    "provider": "google",
+    "input": "Nấu sushi được không?",
+    "expected": "không tìm thấy → thông báo",
+    "chatbot_answer": "Lỗi: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "chatbot_time_ms": 89,
+    "agent_answer": "Lỗi khi gọi LLM: 404 models/qwen2.5-3b-instruct-q4_k_m.gguf is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "agent_time_ms": 89
+  }
+]
